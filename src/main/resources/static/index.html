@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Hei</title>
+    <script type="application/javascript">
+        function hentData () {
+            const sendteOjekt = {
+
+                eier : $("#P").val(),
+                personnummer : $("#N").val(),
+                adress : $("#A").val(),
+                kjentegn : $("#K").val(),
+                merke : $("#M").val(),
+                biltype : $("#T").val()
+            };
+            $.post("/lagre", sendteOjekt, function() {
+                hentAlle()
+
+            });
+
+             $("#P").val('')
+                 $("#N").val('')
+              $("#A").val('')
+                $("#K").val('')
+                $("#M").val('')
+                $("#T").val('')
+
+            function hentAlle() {
+                $.get( "/hentAlle", function( data ) {
+                    formaterData(data);
+                });
+            }
+            function formaterData(Objekter) {
+
+                let ut="<table border='2px'>"
+                for (const motor of Objekter) {
+                   ut+="<tr><td>"+motor.eier+ "</td><td>" +motor.personnummer+ "</td><td>"+motor.adress+ "</td><td>" +motor.kjentegn+ "</td><td>" + motor.merke +
+                        "</td><td>" + motor.biltype+"<td/></tr>"
+
+                }ut+= "</table>"
+                $("#register").html(ut);
+            }}
+            function slett(){
+            $.get("/slette", function(){
+                $("#register").html('');
+            })
+            }
+    </script>
+</head>
+<body>
+<h1>Motor</h1>
+        <table>
+            <tr>
+        <th>Eier personNr</th>
+        <th>Eier Navn</th>
+        <th>Eiers Adress</th>
+       </tr><tr>
+        <td ><input type="text" id="P"></td>
+        <td><input type="text" id="N"></td>
+        <td><input type="text" id="A"></td>
+       </tr><tr>
+        <th>Kjentegn</th>
+        <th>Bilmerke</th>
+        <th>Biltype</th>
+       </tr><tr>
+        <td ><input type="text" id="K"></td>
+        <td><input type="text" id="M"></td>
+        <td><input type="text" id="T"></td></tr><table/>
+
+<button onclick="hentData()">Register</button><br/>
+    <div id="register"></div><br/>
+<button onclick="slett()">Slett</button><br/>
+
+</body>
+</html>
